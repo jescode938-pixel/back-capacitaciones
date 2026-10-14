@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { verifyToken, verifyAdmin } from '../middleware/auth.js';
-import { upload } from '../middleware/upload.js';
 import {
   listTrainings, getTraining, createTraining,
   updateTraining, deleteTraining, registerView
