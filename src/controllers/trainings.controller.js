@@ -30,18 +30,24 @@ export async function getTraining(req, res) {
 
 // POST /api/trainings → crear (admin)
 export async function createTraining(req, res) {
-  const { title, description, file_type } = req.body;
-  if (!title || !file_type) return res.status(400).json({ error: 'Faltan campos' });
-  if (!req.file) return res.status(400).json({ error: 'Archivo requerido' });
+  const { title, description, file_type, youtube_id } = req.body;
 
-  const fileUrl = `/${process.env.UPLOAD_DIR || 'uploads'}/${req.file.filename}`;
+  if (!title || !file_type || !youtube_id) {
+    return res.status(400).json({ error: 'Faltan campos: title, file_type, youtube_id' });
+  }
 
   const [result] = await pool.query(
     'INSERT INTO trainings (title, description, file_url, file_type, admin_id) VALUES (?, ?, ?, ?, ?)',
-    [title, description || null, fileUrl, file_type, req.user.id]
+    [title, description || null, youtube_id, file_type, req.user.id]
   );
 
-  res.status(201).json({ id: result.insertId, title, description, file_url: fileUrl, file_type });
+  res.status(201).json({
+    id: result.insertId,
+    title,
+    description,
+    file_url: youtube_id,
+    file_type,
+  });
 }
 
 // PUT /api/trainings/:id → editar (admin)

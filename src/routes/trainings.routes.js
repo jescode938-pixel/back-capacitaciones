@@ -18,7 +18,7 @@ router.get('/:id', getTraining);
 router.post('/:id/view', viewLimiter, registerView);
 
 // Solo admin
-router.post('/', verifyToken, verifyAdmin, upload.single('file'), createTraining);
+router.post('/', verifyToken, verifyAdmin, createTraining);
 router.put('/:id', verifyToken, verifyAdmin, updateTraining);
 router.delete('/:id', verifyToken, verifyAdmin, deleteTraining);
 

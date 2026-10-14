@@ -13,14 +13,35 @@ dotenv.config();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:5174' })); // en producción, tu dominio del front
+// Acepta cualquier localhost y cualquier IP de red local (192.168.x.x, 10.x.x.x)
+const allowedOrigins = [
+  /^http:\/\/localhost:\d+$/,
+  /^http:\/\/127\.0\.0\.1:\d+$/,
+  /^http:\/\/192\.168\.\d+\.\d+:\d+$/,   // ← cubre 192.168.0.105
+  /^http:\/\/10\.\d+\.\d+\.\d+:\d+$/,
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const permitido = allowedOrigins.some((patron) =>
+        typeof patron === 'string' ? patron === origin : patron.test(origin)
+      );
+      if (permitido) return callback(null, true);
+      callback(new Error('No permitido por CORS'));
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // Servir archivos subidos
-app.use(
-  `/${process.env.UPLOAD_DIR || 'uploads'}`,
-  express.static(path.join(__dirname, process.env.UPLOAD_DIR || 'uploads'))
-);
+//app.use(
+  //`/${process.env.UPLOAD_DIR || 'uploads'}`,
+  //express.static(path.join(__dirname, process.env.UPLOAD_DIR || 'uploads'))
+//);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/trainings', trainingRoutes);
@@ -34,5 +55,9 @@ app.use((err, _req, res, _next) => {
   res.status(err.status || 500).json({ error: err.message || 'Error interno' });
 });
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`API escuchando en http://localhost:${PORT}`));
+const PORT = process.env.PORT || 3000;
+
+// Escucha en todas las interfaces para que el celular lo alcance por la IP local
+app.listen(PORT, '0.0.0.0', () =>
+  console.log(`API escuchando en http://localhost:${PORT}`)
+);
