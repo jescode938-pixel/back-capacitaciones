@@ -17,7 +17,7 @@ const app = express();
 const allowedOrigins = [
   /^http:\/\/localhost:\d+$/,
   /^http:\/\/127\.0\.0\.1:\d+$/,
-  /^http:\/\/192\.168\.\d+\.\d+:\d+$/,   // ← cubre 192.168.0.105
+  /^http:\/\/192\.168\.\d+\.\d+:\d+$/,   // ← cubre 192.168.0.1
   /^http:\/\/10\.\d+\.\d+\.\d+:\d+$/,
 ];
 
