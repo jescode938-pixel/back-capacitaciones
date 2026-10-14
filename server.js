@@ -15,12 +15,17 @@ const app = express();
 
 // Acepta cualquier localhost y cualquier IP de red local (192.168.x.x, 10.x.x.x)
 const allowedOrigins = [
+  // Desarrollo local
   /^http:\/\/localhost:\d+$/,
   /^http:\/\/127\.0\.0\.1:\d+$/,
-  /^http:\/\/192\.168\.\d+\.\d+:\d+$/,   // ← cubre 192.168.0.1
+  /^http:\/\/192\.168\.\d+\.\d+:\d+$/,
   /^http:\/\/10\.\d+\.\d+\.\d+:\d+$/,
-];
 
+  // Producción en Vercel
+  'https://front-capacitaciones.vercel.app',
+  // Permitir también preview deployments de Vercel (opcional)
+  /^https:\/\/front-capacitaciones-.*\.vercel\.app$/,
+];
 app.use(
   cors({
     origin: (origin, callback) => {
