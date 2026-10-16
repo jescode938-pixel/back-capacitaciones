@@ -92,3 +92,15 @@ export async function registerView(req, res) {
   );
   res.json({ total_views: rows[0].total });
 }
+
+// GET /api/trainings/version → chequeo ligero para polling
+export async function getVersion(req, res) {
+  const [rows] = await pool.query(`
+    SELECT COUNT(*) AS total, MAX(created_at) AS ultima
+    FROM trainings
+  `);
+  res.json({
+    total: Number(rows[0].total),
+    ultima: rows[0].ultima, // puede ser null si está vacío
+  });
+}

@@ -3,7 +3,8 @@ import rateLimit from 'express-rate-limit';
 import { verifyToken, verifyAdmin } from '../middleware/auth.js';
 import {
   listTrainings, getTraining, createTraining,
-  updateTraining, deleteTraining, registerView
+  updateTraining, deleteTraining, registerView,
+    getVersion
 } from '../controllers/trainings.controller.js';
 
 const router = Router();
@@ -13,6 +14,7 @@ const viewLimiter = rateLimit({ windowMs: 60_000, max: 30 });
 
 // Públicas
 router.get('/', listTrainings);
+router.get('/version', getVersion);
 router.get('/:id', getTraining);
 router.post('/:id/view', viewLimiter, registerView);
 
